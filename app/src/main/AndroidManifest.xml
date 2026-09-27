@@ -25,6 +25,9 @@
         -->
         <activity
             android:name=".QuickNextBackActivity"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:noHistory="true"            
             android:exported="true"
             android:label="@string/app_name_quick"
             android:theme="@style/Theme.SeekBack.Transparent">

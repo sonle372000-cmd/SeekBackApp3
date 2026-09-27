@@ -20,6 +20,32 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="CẤP QUYỀN TRUY CẬP THÔNG BÁO"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tùy chọn: mở 1 ứng dụng sau khi chuyển bài xong (delay thêm 1 giây)"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvSelectedApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chưa chọn ứng dụng nào"
+        android:textStyle="italic"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <Button
+        android:id="@+id/btnChooseApp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="CHỌN ỨNG DỤNG"
+        android:textSize="14sp" />
 
 </LinearLayout>

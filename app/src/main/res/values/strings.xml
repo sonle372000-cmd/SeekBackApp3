@@ -1,5 +1,3 @@
 <resources>
-    <string name="app_name">SeekBack</string>
-    <string name="app_name_settings">SeekBack Cài đặt</string>
-    <string name="app_name_quick">Next Bài</string>
+    <string name="app_name">Next Bài</string>
 </resources>

@@ -21,10 +21,9 @@ jobs:
 
       # Cai dat Android SDK (platform, build-tools) va tu dong dong y license,
       # day la nguyen nhan pho bien nhat khien build that bai voi exit code 1
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install required SDK packages
+      - name: Install required Android SDK packages
+        run: yes | sdkmanager --licenses > /dev/null || true
+      - name: Install platform & build-tools
         run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
       # Repo nay khong co san file gradlew (gradle wrapper),

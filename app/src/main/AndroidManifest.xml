@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--
+        Bat buoc tu Android 11 (API 30) tro len: neu khong khai bao,
+        app se KHONG the liet ke duoc danh sach cac ung dung khac
+        (tinh nang "chon 1 ung dung de tu mo sau khi next+back").
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -51,6 +63,23 @@
                 <action android:name="com.example.seekback.ACTION_NEXT_BACK" />
             </intent-filter>
         </receiver>
+
+        <!--
+            Accessibility Service: bat phim vat ly (phim so "1") O CAP
+            HE THONG, du dang mo bat ky app nao. Nguoi dung phai tu bat
+            dich vu nay 1 lan trong Cai dat -> Tro nang (Accessibility).
+        -->
+        <service
+            android:name=".KeyOneAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice.description"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
 
     </application>
 

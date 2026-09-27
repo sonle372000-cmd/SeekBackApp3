@@ -16,18 +16,10 @@
         android:layout_marginBottom="24dp" />
 
     <EditText
-        android:id="@+id/etForwardSeconds"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Số giây tua tới (mặc định 10)"
-        android:inputType="number"
-        android:layout_marginBottom="12dp" />
-
-    <EditText
         android:id="@+id/etWaitSeconds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Số giây chờ trước khi quay lại (mặc định 5)"
+        android:hint="Số giây chờ trước khi quay lại bài cũ (mặc định 5)"
         android:inputType="number"
         android:layout_marginBottom="24dp" />
 
@@ -35,7 +27,7 @@
         android:id="@+id/btnSeek"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="TUA TỚI RỒI QUAY LẠI"
+        android:text="CHUYỂN BÀI TIẾP THEO RỒI QUAY LẠI"
         android:textSize="16sp" />
 
     <Button

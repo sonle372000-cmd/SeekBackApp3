@@ -4,37 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="#FFFFFF">
 
     <TextView
-        android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chưa cấp quyền truy cập thông báo"
+        android:text="Cần cấp quyền truy cập thông báo để app hoạt động.\n\nBấm nút bên dưới, tìm &quot;Next Bài&quot; trong danh sách rồi bật lên, sau đó bấm Back để quay lại app này."
         android:textSize="16sp"
         android:gravity="center"
         android:layout_marginBottom="24dp" />
 
-    <EditText
-        android:id="@+id/etWaitSeconds"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Số giây chờ trước khi quay lại bài cũ (mặc định 5)"
-        android:inputType="number"
-        android:layout_marginBottom="24dp" />
-
-    <Button
-        android:id="@+id/btnSeek"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="CHUYỂN BÀI TIẾP THEO RỒI QUAY LẠI"
-        android:textSize="16sp" />
-
     <Button
         android:id="@+id/btnGrantPermission"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Mở cài đặt cấp quyền thông báo" />
+        android:layout_height="60dp"
+        android:text="CẤP QUYỀN TRUY CẬP THÔNG BÁO"
+        android:textSize="16sp" />
 
 </LinearLayout>

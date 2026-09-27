@@ -9,12 +9,11 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+// KHONG khai bao "allprojects { repositories {...} }" o day nua,
+// vi settings.gradle da dung dependencyResolutionManagement de
+// quan ly repository tap trung (FAIL_ON_PROJECT_REPOS). Neu khai
+// bao lai o day se bi loi "prefer settings repositories over project
+// repositories".
 
 task clean(type: Delete) {
     delete rootProject.buildDir

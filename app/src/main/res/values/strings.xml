@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Next Bài</string>
+    <string name="accessibility_service_description">SeekBack cần quyền trợ năng để theo dõi thao tác và tua lại nội dung.</string>
 </resources>

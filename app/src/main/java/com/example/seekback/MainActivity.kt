@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity() {
 
     private lateinit var tvStatus: TextView
-    private lateinit var etForwardSeconds: EditText
     private lateinit var etWaitSeconds: EditText
     private lateinit var btnSeek: Button
     private lateinit var btnGrantPermission: Button
@@ -29,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         tvStatus = findViewById(R.id.tvStatus)
-        etForwardSeconds = findViewById(R.id.etForwardSeconds)
         etWaitSeconds = findViewById(R.id.etWaitSeconds)
         btnSeek = findViewById(R.id.btnSeek)
         btnGrantPermission = findViewById(R.id.btnGrantPermission)
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnSeek.setOnClickListener {
-            doSeekForwardThenBack()
+            doNextThenBack()
         }
     }
 
@@ -79,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun doSeekForwardThenBack() {
+    private fun doNextThenBack() {
         if (!isNotificationAccessGranted()) {
             Toast.makeText(this, "Bạn cần cấp quyền truy cập thông báo trước", Toast.LENGTH_LONG).show()
             startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
@@ -88,28 +86,23 @@ class MainActivity : AppCompatActivity() {
 
         val controller = getActiveController()
         if (controller == null) {
-            Toast.makeText(this, "Không tìm thấy bài hát nào đang phát", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Không tìm thấy bài hát/video nào đang phát", Toast.LENGTH_LONG).show()
             return
         }
 
-        val currentPosition = controller.playbackState?.position ?: 0L
-
-        val forwardSeconds = etForwardSeconds.text.toString().toLongOrNull() ?: 10L
         val waitSeconds = etWaitSeconds.text.toString().toLongOrNull() ?: 5L
-
-        val forwardMs = forwardSeconds * 1000L
         val waitMs = waitSeconds * 1000L
 
-        // Buoc 1: tua toi
-        controller.transportControls.seekTo(currentPosition + forwardMs)
-        Toast.makeText(this, "Đã tua tới +${forwardSeconds}s, sẽ quay lại sau ${waitSeconds}s", Toast.LENGTH_SHORT).show()
+        // Buoc 1: chuyen sang bai/video tiep theo
+        controller.transportControls.skipToNext()
+        Toast.makeText(this, "Đã chuyển bài tiếp theo, sẽ quay lại bài cũ sau ${waitSeconds}s", Toast.LENGTH_SHORT).show()
 
-        // Buoc 2: sau khoang thoi gian cho, tua quay lai vi tri ban dau
+        // Buoc 2: sau khoang thoi gian cho, tu dong quay lai bai/video cu
         handler.postDelayed({
             // Lay lai controller phong khi phien nhac da doi
             val c = getActiveController() ?: controller
-            c.transportControls.seekTo(currentPosition)
-            Toast.makeText(this, "Đã quay lại vị trí ban đầu", Toast.LENGTH_SHORT).show()
+            c.transportControls.skipToPrevious()
+            Toast.makeText(this, "Đã quay lại bài cũ", Toast.LENGTH_SHORT).show()
         }, waitMs)
     }
 

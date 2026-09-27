@@ -41,9 +41,16 @@ class MainActivity : AppCompatActivity() {
 
         if (isNotificationAccessGranted()) {
             actionStarted = true
+            // QUAN TRONG: luon ve mot khung hinh that (lop phu mo 30%)
+            // ngay lap tuc, thay vi de trong. Neu Activity khong ve gi ca,
+            // trong luc he thong chuyen canh (dac biet khi duoc goi qua
+            // trung gian nhu tro ly ao/Navi) se lo ra man hinh Home. Co
+            // giao dien thuc su duoc ve ra se giu app hien tai luon hien
+            // ben duoi, chi bi phu mo 30% thoi.
+            setContentView(R.layout.activity_overlay)
             runNextThenBack()
         } else {
-            // Chua cap quyen -> hien man hinh xin quyen
+            // Chua cap quyen -> hien man hinh xin quyen (nen trang, khong mo)
             setContentView(R.layout.activity_main)
             findViewById<Button>(R.id.btnGrantPermission).setOnClickListener {
                 startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))

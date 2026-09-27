@@ -10,7 +10,24 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name_settings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            Activity thu 2: hien thi thanh 1 icon RIENG ngoai man hinh chinh.
+            Khong co giao dien (khong setContentView), bam vao la chay
+            ngay next -> cho -> quay lai roi tu dong dong (finish()).
+        -->
+        <activity
+            android:name=".QuickNextBackActivity"
+            android:exported="true"
+            android:label="@string/app_name_quick"
+            android:theme="@style/Theme.SeekBack.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

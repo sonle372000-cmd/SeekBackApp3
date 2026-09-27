@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Lop phu mo 30% (mau den, alpha 4D = ~30%) de tren app dang mo.
+    Nho theo windowIsTranslucent=true trong Theme.SeekBack.Transparent,
+    phan nao KHONG bi to mau se de lo app phia duoi qua, con phan co
+    mau se hoa tron 30% voi noi dung phia sau, tao hieu ung "phu mo".
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4D000000">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="#FFFFFF" />
+
+</FrameLayout>

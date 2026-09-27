@@ -26,20 +26,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+    
         tvStatus = findViewById(R.id.tvStatus)
         etWaitSeconds = findViewById(R.id.etWaitSeconds)
         btnSeek = findViewById(R.id.btnSeek)
         btnGrantPermission = findViewById(R.id.btnGrantPermission)
-
+    
         btnGrantPermission.setOnClickListener {
-            // Mo man hinh he thong de nguoi dung tu bat quyen "Notification access"
             startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
         }
-
+    
         btnSeek.setOnClickListener {
             doNextThenBack()
         }
+    
+        // THÊM DÒNG NÀY: tự động chạy ngay khi mở app, không cần bấm nút
+        doNextThenBack()
     }
 
     override fun onResume() {

@@ -20,11 +20,20 @@ jobs:
           java-version: '17'
 
       # May ao ubuntu-latest da co san Android SDK, nhung sdkmanager
-      # nam trong thu muc co ten phien ban (vd cmdline-tools/16.0/bin)
-      # nen can tu tim duong dan chinh xac thay vi goi thang "sdkmanager"
+      # nam trong thu muc co ten phien ban, vd:
+      # cmdline-tools/16.0/bin/sdkmanager (sau 3 cap tinh tu cmdline-tools)
+      # nen phai tim voi maxdepth du sau, dong thoi kiem tra ca hai bien
+      # moi truong ANDROID_HOME va ANDROID_SDK_ROOT phong khi bien nao rong.
       - name: Locate sdkmanager
         run: |
-          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager | sort -V | tail -n 1)
+          SDK_DIR="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          echo "Using SDK dir: $SDK_DIR"
+          SDKMANAGER=$(find "$SDK_DIR/cmdline-tools" -maxdepth 4 -type f -name sdkmanager | sort -V | tail -n 1)
+          if [ -z "$SDKMANAGER" ]; then
+            echo "Khong tim thay sdkmanager, liet ke thu muc de kiem tra:"
+            find "$SDK_DIR/cmdline-tools" -maxdepth 4
+            exit 1
+          fi
           echo "Found sdkmanager at: $SDKMANAGER"
           echo "SDKMANAGER=$SDKMANAGER" >> "$GITHUB_ENV"
 

@@ -8,62 +8,61 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-/**
- * Day la "app thu 2" (icon rieng ngoai man hinh chinh, ten hien thi la
- * "Next Bai"). KHONG co giao dien nguoi dung (khong setContentView).
- *
- * Bam vao icon nay se:
- * 1. Tu dong lay bai hat/video dang phat o bat ky app nhac/video nao
- *    (khong can tu tim/chon bai).
- * 2. Chuyen sang bai/video tiep theo (skipToNext).
- * 3. Sau X giay cho (X duoc cau hinh tu app "SeekBack Cai dat"),
- *    tu dong quay lai bai/video cu (skipToPrevious).
- * 4. Tu dong dong lai (finish()) sau khi xong, tra nguoi dung ve man hinh chinh.
- */
-class QuickNextBackActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var tvStatus: TextView
+    private lateinit var etWaitSeconds: EditText
+    private lateinit var btnSeek: Button
+    private lateinit var btnGrantPermission: Button
 
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Co y KHONG goi setContentView() -> nho theme trong suot,
-        // nguoi dung se khong thay giao dien nao hien ra ca.
+        setContentView(R.layout.activity_main)
 
-        if (!isNotificationAccessGranted()) {
-            Toast.makeText(
-                this,
-                "Chưa cấp quyền. Mở app \"SeekBack Cài đặt\" để cấp quyền trước.",
-                Toast.LENGTH_LONG
-            ).show()
-            finish()
-            return
+        tvStatus = findViewById(R.id.tvStatus)
+        etWaitSeconds = findViewById(R.id.etWaitSeconds)
+        btnSeek = findViewById(R.id.btnSeek)
+        btnGrantPermission = findViewById(R.id.btnGrantPermission)
+
+        // Doc so giay delay da luu truoc do (neu co) de hien len o nhap
+        val prefs = getSharedPreferences(
+            QuickNextBackActivity.PREFS_NAME, MODE_PRIVATE
+        )
+        val savedWaitSeconds = prefs.getLong(QuickNextBackActivity.KEY_WAIT_SECONDS, 5L)
+        etWaitSeconds.setText(savedWaitSeconds.toString())
+
+        btnGrantPermission.setOnClickListener {
+            // Mo man hinh he thong de nguoi dung tu bat quyen "Notification access"
+            startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
         }
 
-        val controller = getActiveController()
-        if (controller == null) {
-            Toast.makeText(this, "Không tìm thấy bài hát/video nào đang phát", Toast.LENGTH_LONG).show()
-            finish()
-            return
+        btnSeek.setOnClickListener {
+            doNextThenBack()
         }
+    }
 
-        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        val waitSeconds = prefs.getLong(KEY_WAIT_SECONDS, 5L)
-        val waitMs = waitSeconds * 1000L
+    // Moi khi roi khoi man hinh cai dat, tu dong luu lai so giay delay
+    // de app "Next Bai" (icon rieng) doc duoc gia tri moi nhat.
+    override fun onPause() {
+        super.onPause()
+        val waitSeconds = etWaitSeconds.text.toString().toLongOrNull() ?: 5L
+        val prefs = getSharedPreferences(
+            QuickNextBackActivity.PREFS_NAME, MODE_PRIVATE
+        )
+        prefs.edit().putLong(QuickNextBackActivity.KEY_WAIT_SECONDS, waitSeconds).apply()
+    }
 
-        // Buoc 1: chuyen sang bai/video tiep theo
-        controller.transportControls.skipToNext()
-        Toast.makeText(this, "Đã chuyển bài tiếp theo...", Toast.LENGTH_SHORT).show()
-
-        // Buoc 2: sau khoang thoi gian cho, tu dong quay lai bai/video cu, roi dong app
-        handler.postDelayed({
-            val c = getActiveController() ?: controller
-            c.transportControls.skipToPrevious()
-            Toast.makeText(this, "Đã quay lại bài cũ", Toast.LENGTH_SHORT).show()
-            finish()
-        }, waitMs)
+    override fun onResume() {
+        super.onResume()
+        updateStatus()
     }
 
     private fun isNotificationAccessGranted(): Boolean {
@@ -71,11 +70,24 @@ class QuickNextBackActivity : AppCompatActivity() {
         return flat != null && flat.contains(packageName)
     }
 
+    private fun updateStatus() {
+        tvStatus.text = if (isNotificationAccessGranted()) {
+            "Đã cấp quyền. Mở bài hát và bấm nút bên dưới."
+        } else {
+            "Chưa cấp quyền truy cập thông báo. Bấm nút bên dưới để cấp quyền."
+        }
+    }
+
+    /**
+     * Lay ra MediaController dau tien dang co (bai hat dang mo o app nhac nao do).
+     * Tra ve null neu chua cap quyen hoac khong co app nhac nao dang chay.
+     */
     private fun getActiveController(): MediaController? {
         return try {
             val manager = getSystemService(MEDIA_SESSION_SERVICE) as MediaSessionManager
             val componentName = ComponentName(this, NotifListenerService::class.java)
             val controllers = manager.getActiveSessions(componentName)
+            // Uu tien phien dang PLAYING, neu khong co thi lay phien dau tien
             controllers.firstOrNull { it.playbackState?.state == android.media.session.PlaybackState.STATE_PLAYING }
                 ?: controllers.firstOrNull()
         } catch (e: SecurityException) {
@@ -83,13 +95,37 @@ class QuickNextBackActivity : AppCompatActivity() {
         }
     }
 
+    private fun doNextThenBack() {
+        if (!isNotificationAccessGranted()) {
+            Toast.makeText(this, "Bạn cần cấp quyền truy cập thông báo trước", Toast.LENGTH_LONG).show()
+            startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+            return
+        }
+
+        val controller = getActiveController()
+        if (controller == null) {
+            Toast.makeText(this, "Không tìm thấy bài hát/video nào đang phát", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val waitSeconds = etWaitSeconds.text.toString().toLongOrNull() ?: 5L
+        val waitMs = waitSeconds * 1000L
+
+        // Buoc 1: chuyen sang bai/video tiep theo
+        controller.transportControls.skipToNext()
+        Toast.makeText(this, "Đã chuyển bài tiếp theo, sẽ quay lại bài cũ sau ${waitSeconds}s", Toast.LENGTH_SHORT).show()
+
+        // Buoc 2: sau khoang thoi gian cho, tu dong quay lai bai/video cu
+        handler.postDelayed({
+            // Lay lai controller phong khi phien nhac da doi
+            val c = getActiveController() ?: controller
+            c.transportControls.skipToPrevious()
+            Toast.makeText(this, "Đã quay lại bài cũ", Toast.LENGTH_SHORT).show()
+        }, waitMs)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
-    }
-
-    companion object {
-        const val PREFS_NAME = "seekback_prefs"
-        const val KEY_WAIT_SECONDS = "wait_seconds"
     }
 }

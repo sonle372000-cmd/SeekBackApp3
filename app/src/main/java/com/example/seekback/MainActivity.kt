@@ -1,3 +1,5 @@
+package com.example.seekback
+
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Intent

@@ -38,6 +38,20 @@
             </intent-filter>
         </service>
 
+        <!--
+            Receiver chay ngam: goi bang broadcast tu app gan phim tat
+            (Button Mapper, Tasker, MacroDroid...) de thuc hien next/lui
+            bai MA KHONG mo bat ky Activity/man hinh nao, khong lam gian
+            doan ung dung ban dang xem.
+        -->
+        <receiver
+            android:name=".NextBackReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.seekback.ACTION_NEXT_BACK" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

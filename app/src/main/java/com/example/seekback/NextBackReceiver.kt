@@ -12,10 +12,11 @@ import android.provider.Settings
 
 /**
  * Nhan mot broadcast (tin hieu ngam) tu ben ngoai (Button Mapper, Tasker,
- * MacroDroid, adb...) va thuc hien next -> cho 2s -> lui bai, HOAN TOAN
- * KHONG mo bat ky man hinh/Activity nao. Vi vay, khi ban gan action nay
- * cho 1 nut bam, ung dung ban dang xem/nghe (YouTube, Spotify...) se
- * KHONG bi chuyen sang nen hay bi gian doan chut nao.
+ * MacroDroid, adb...) va thuc hien next -> cho 2s -> lui bai -> cho them 1s
+ * -> mo ung dung da chon (neu co), HOAN TOAN KHONG mo Activity/man hinh
+ * cua app Next Bai. Vi vay khi gan action nay cho 1 nut bam, ung dung ban
+ * dang xem/nghe (YouTube, Spotify...) se KHONG bi chuyen sang nen hay bi
+ * gian doan chut nao (tru buoc mo ung dung da chon o cuoi, neu ban co chon).
  *
  * De kich hoat, gui 1 broadcast voi action:
  *     com.example.seekback.ACTION_NEXT_BACK
@@ -37,18 +38,17 @@ class NextBackReceiver : BroadcastReceiver() {
         val flat = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
         if (flat == null || !flat.contains(context.packageName)) {
             // Chua cap quyen -> khong the dieu khien media, bo qua trong im lang
-            // (co tinh KHONG mo Activity xin quyen o day de tranh gian doan
-            // app dang xem; ban can tu mo app it nhat 1 lan de cap quyen truoc).
             return
         }
 
-        // goAsync() cho phep receiver "song" them vai giay de hoan tat viec
-        // cho 2s roi lui bai, thay vi bi he thong dong tien trinh ngay lap tuc.
+        // goAsync() cho phep receiver "song" them vai giay de hoan tat cac
+        // buoc cho + mo app, thay vi bi he thong dong tien trinh ngay lap tuc.
         val pendingResult = goAsync()
+        val appContext = context.applicationContext
 
         try {
-            val manager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
-            val componentName = ComponentName(context, NotifListenerService::class.java)
+            val manager = appContext.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
+            val componentName = ComponentName(appContext, NotifListenerService::class.java)
 
             val controllers = manager.getActiveSessions(componentName)
             val controller = controllers.firstOrNull { it.playbackState?.state == PlaybackState.STATE_PLAYING }
@@ -71,16 +71,32 @@ class NextBackReceiver : BroadcastReceiver() {
                 }
                 val c = latestControllers.firstOrNull() ?: controller
                 c.transportControls.skipToPrevious()
-                pendingResult.finish()
-            }, DEFAULT_WAIT_MS)
+
+                // Buoc 3: cho them 1 giay, roi mo ung dung da chon (neu co)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    openSelectedAppIfAny(appContext)
+                    pendingResult.finish()
+                }, WAIT_BEFORE_OPEN_APP_MS)
+
+            }, WAIT_BEFORE_BACK_MS)
 
         } catch (e: SecurityException) {
             pendingResult.finish()
         }
     }
 
+    private fun openSelectedAppIfAny(context: Context) {
+        val savedPackage = Prefs.getOpenAfterPackage(context) ?: return
+        val launchIntent = context.packageManager.getLaunchIntentForPackage(savedPackage) ?: return
+        // Bat buoc phai co FLAG_ACTIVITY_NEW_TASK vi dang khoi chay Activity
+        // tu Context cua BroadcastReceiver, khong phai tu 1 Activity dang co san.
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(launchIntent)
+    }
+
     companion object {
         const val ACTION_NEXT_BACK = "com.example.seekback.ACTION_NEXT_BACK"
-        private const val DEFAULT_WAIT_MS = 2000L
+        private const val WAIT_BEFORE_BACK_MS = 2000L
+        private const val WAIT_BEFORE_OPEN_APP_MS = 1000L
     }
 }

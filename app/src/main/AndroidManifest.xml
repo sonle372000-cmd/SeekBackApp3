@@ -6,31 +6,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SeekBack">
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name_settings">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        android:theme="@style/Theme.SeekBack.Transparent">
 
         <!--
-            Activity thu 2: hien thi thanh 1 icon RIENG ngoai man hinh chinh.
-            Khong co giao dien (khong setContentView), bam vao la chay
-            ngay next -> cho -> quay lai roi tu dong dong (finish()).
+            Chi 1 activity duy nhat.
+            - Lan dau mo app (chua cap quyen): hien man hinh xin quyen.
+            - Cac lan sau (da cap quyen): tu dong chay next -> cho 2s ->
+              lui bai, khong hien giao dien gi, roi tu dong dong lai.
         -->
         <activity
-            android:name=".QuickNextBackActivity"
-            android:taskAffinity=""
-            android:excludeFromRecents="true"
-            android:noHistory="true"            
-            android:exported="true"
-            android:label="@string/app_name_quick"
-            android:theme="@style/Theme.SeekBack.Transparent">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,7 +30,7 @@
         -->
         <service
             android:name=".NotifListenerService"
-            android:label="SeekBack Media Listener"
+            android:label="Next Bai Media Listener"
             android:exported="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

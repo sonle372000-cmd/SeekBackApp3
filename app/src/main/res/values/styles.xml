@@ -1,15 +1,9 @@
 <resources>
-    <style name="Theme.SeekBack" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
-    </style>
-
     <!--
-        Theme cho QuickNextBackActivity: trong suot, khong tieu de,
-        khong hieu ung chuyen canh -> nguoi dung cam giac nhu bam icon
-        la thuc thi ngam roi tu dong quay ve man hinh chinh, khong thay
-        giao dien nao hien ra ca.
+        Theme trong suot cho toan app: khi da cap quyen, activity chay
+        ngam khong hien giao dien nao (khong bi "chop trang" khi mo).
+        Khi chua cap quyen, layout xin quyen se tu dat nen mau trang
+        rieng nen van hien thi binh thuong, ro rang.
     -->
     <style name="Theme.SeekBack.Transparent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
@@ -17,5 +11,8 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
     </style>
 </resources>

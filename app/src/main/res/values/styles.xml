@@ -4,4 +4,18 @@
         <item name="colorPrimaryDark">@color/purple_700</item>
         <item name="colorAccent">@color/teal_200</item>
     </style>
+
+    <!--
+        Theme cho QuickNextBackActivity: trong suot, khong tieu de,
+        khong hieu ung chuyen canh -> nguoi dung cam giac nhu bam icon
+        la thuc thi ngam roi tu dong quay ve man hinh chinh, khong thay
+        giao dien nao hien ra ca.
+    -->
+    <style name="Theme.SeekBack.Transparent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>
